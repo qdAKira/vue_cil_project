@@ -1,7 +1,7 @@
 <template>
   <div>
    
-    <Student></Student>
+    <Student name="王老五" :age="19"></Student>
     
   </div>
 </template>

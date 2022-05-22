@@ -12,7 +12,6 @@ Vue.config.productionTip = false
 // }).$mount('#app')
 
 //创建Vue实例对象----vm
-
 new Vue({
   el:'#app',
   render:a=>a(App)
