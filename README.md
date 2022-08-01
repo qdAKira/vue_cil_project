@@ -182,7 +182,7 @@
 
     1. 第一种方式，在父组件中：```<Demo @atguigu="test"/>```  或 ```<Demo v-on:atguigu="test"/>```
 
-    2. 第二种方式，在父组件中：
+    2. 第二种方式，在父组件中：($on方法已经在vue3中移除)
 
         ```js
         <Demo ref="demo"/>
@@ -443,6 +443,9 @@ module.exports = {
    ```
 
 ## Vuex
+引入时vue2中只能使用vuex3(npm i vuex@3)
+vue3中使用vuex4
+
 
 ### 1.概念
 
@@ -694,7 +697,7 @@ module.exports = {
 2. 前端路由：key是路径，value是组件。
 
 ### 1.基本使用
-
+vue2中安装此版本（npm i vue-router@3）
 1. 安装vue-router，命令：```npm i vue-router```
 
 2. 应用插件：```Vue.use(VueRouter)```
@@ -921,7 +924,7 @@ module.exports = {
 	//第一种写法：props值为对象，该对象中所有的key-value的组合最终都会通过props传给Detail组件
 	// props:{a:900}
 
-	//第二种写法：props值为布尔值，布尔值为true，则把路由收到的所有params参数通过props传给Detail组件
+	//第二种写法：props值为布尔值，布尔值为true，则把路由收到的所有params参数通过props传给Detail组件(不能传query参数)
 	// props:true
 	
 	//第三种写法：props值为函数，该函数返回的对象中每一组key-value都会通过props传给Detail组件
@@ -993,7 +996,7 @@ module.exports = {
 
 2. 分类：全局守卫、独享守卫、组件内守卫
 
-3. 全局守卫:
+3. 全局守卫:需要配置meta信息
 
    ```js
    //全局前置守卫：初始化时执行、每次路由切换前执行
@@ -1066,4 +1069,91 @@ module.exports = {
    2. 兼容性和hash模式相比略差。
    3. 应用部署上线时需要后端人员支持，解决刷新页面服务端404的问题。
 	 
-	 
+### 14.引入局部element-ui出现的问题
+ 1.  一、elementUI按需引入报错。Error: Cannot find module 'babel-preset-es2015' from 'XXX'
+
+   根据elementUI官方文档，按需引入组件。
+
+   第一步：安装插件
+
+   npm install babel-plugin-component -D
+   　
+
+   第二步: 将 .babelrc 修改为：
+
+   {
+   "presets": [["es2015", { "modules": false }]],
+   "plugins": [
+      [
+         "component",
+         {
+         "libraryName": "element-ui",
+         "styleLibraryName": "theme-chalk"
+         }
+      ]
+   ]
+   }
+   但是报错了。 Error: Cannot find module 'babel-preset-es2015' from '/Users/kangxiaoxiao/Documents/workspace/demo'
+
+
+   解决办法如下：
+
+   1、安装插件 @babel/preset-env
+
+   npm i @babel/preset-env -D
+   2、将 .babelrc中的 es2015 改为 @babel/preset-env
+
+   {
+   "presets": [["@babel/preset-env", { "modules": false }]],
+   "plugins": [
+      [
+         "component",
+         {
+         "libraryName": "element-ui",
+         "styleLibraryName": "theme-chalk"
+         }
+      ]
+   ]
+   }
+   　　
+
+   二、多组件引入样式
+
+   babel-plugin-component上的文档说明如下：
+
+   {
+   "plugins": [xxx,
+      ["component", {
+         libraryName: "antd",
+         style: true,
+      }, "antd"],
+      ["component", {
+         libraryName: "test-module",
+         style: true,
+      }, "test-module"]
+   ]
+   }
+   但是。。实在是写得太简单了，怎么引入都报错，经摸索，可以如下：
+
+   {
+   "presets": [["@babel/preset-env", { "modules": false }]],
+   "plugins": [
+      [
+         "component",
+         {
+         "libraryName": "element-ui",
+         "styleLibraryName": "theme-chalk"
+         },
+         "element-ui"
+      ],
+      [
+         "component",
+         {
+         "libraryName": "mint-ui",
+         "styleLibraryName": "theme-chalk",
+         "style": true
+         },
+         "mint-ui"
+      ]
+   ]
+   }
